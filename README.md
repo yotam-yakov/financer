@@ -1,36 +1,120 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Financer
 
-## Getting Started
+Multi-user stock portfolio tracker with live market prices, USD/ILS earnings, and role-based access. Built with Next.js and backed by Firebase (Firestore + Cloud Functions).
 
-First, run the development server:
+## Features
+
+- **Password-gated access** — admin and viewer roles via `/api/auth`
+- **Multi-user portfolios** — create, rename, and delete users; view one user or combined “all”
+- **Buy / sell transactions** — update holdings and keep a transaction history
+- **Live stock prices** — Yahoo Finance proxy at `/api/stocks`
+- **Portfolio visualization** — holdings table and allocation pie chart (Recharts)
+- **Earnings in USD and ILS** — unrealized P/L with live USD→ILS conversion
+- **Persistent storage** — Firestore via a Cloud Function (`manageUsers`), proxied by `/api/users`
+
+## Tech stack
+
+| Layer | Technology |
+| --- | --- |
+| Frontend | Next.js 16, React 19, Tailwind CSS 4 |
+| Charts | Recharts |
+| API | Next.js App Router route handlers |
+| Backend | Firebase Cloud Functions, Firestore |
+| Hosting | Firebase Hosting (Next.js source) |
+| Runtime | Node.js 24 (see `.nvmrc`) |
+
+## Project structure
+
+```
+src/
+  app/                 # App Router pages and API routes
+    api/auth/          # Role-based password login
+    api/stocks/        # Live ticker price proxy
+    api/users/         # Proxy to Cloud Function for portfolio CRUD
+    page.js            # Main portfolio dashboard
+  components/          # UI: holdings, charts, modals, history
+  lib/                 # Firestore helper and migration script
+functions/             # Firebase Cloud Function (manageUsers)
+firebase.json          # Hosting + Functions config
+API-README.md          # API endpoint reference
+```
+
+## Getting started
+
+### Prerequisites
+
+- Node.js 24+
+- A Firebase project with Firestore and Cloud Functions enabled
+- npm
+
+### Install
+
+```bash
+npm install
+cd functions && npm install && cd ..
+```
+
+### Environment
+
+Create a `.env.local` in the project root (never commit secrets):
+
+```bash
+ADMIN_PASSWORD=your-admin-password
+VIEWER_PASSWORD=your-viewer-password
+```
+
+Defaults used only for local/dev if unset: `admin123` / `viewer123`.
+
+Firebase Admin credentials should be available in the environment where Cloud Functions and any local Admin SDK scripts run (for example Application Default Credentials or a service account).
+
+### Develop
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+### Build and run production locally
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm start
+```
 
-## Learn More
+## API overview
 
-To learn more about Next.js, take a look at the following resources:
+| Endpoint | Purpose |
+| --- | --- |
+| `POST /api/auth` | Authenticate; returns `{ role: "admin" \| "viewer" }` |
+| `GET /api/stocks?tickers=AAPL,MSFT` | Current and previous-close prices |
+| `GET/POST/PATCH/DELETE /api/users` | Portfolio users, holdings, history, totals |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+See [API-README.md](./API-README.md) for query parameters and response shapes.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Firebase
 
-## Deploy on Vercel
+- **Project alias:** configured in `.firebaserc`
+- **Function:** `manageUsers` — HTTPS handler for user/holdings CRUD and aggregates
+- **Next proxy:** `src/app/api/users/route.js` forwards to the deployed function URL
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Optional one-time seed from local JSON:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+node src/lib/migrate.mjs
+```
+
+(Requires Firebase Admin credentials and a populated `src/lib/data.json`.)
+
+## Scripts
+
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start Next.js development server |
+| `npm run build` | Production build |
+| `npm start` | Serve production build |
+| `npm run lint` | Run ESLint |
+
+## License
+
+ISC

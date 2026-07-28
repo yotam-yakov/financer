@@ -22,9 +22,24 @@
     "eslint-config-next": "16.2.9",
     "tailwindcss": "^4"
   },
-  "description": "This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).",
+  "description": "Multi-user stock portfolio tracker with live prices, Firebase backend, and role-based access.",
   "main": "index.js",
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "keywords": [
+    "nextjs",
+    "firebase",
+    "firestore",
+    "portfolio",
+    "stocks",
+    "recharts"
+  ],
+  "author": "yotam-yakov",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yotam-yakov/financer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yotam-yakov/financer/issues"
+  },
+  "homepage": "https://github.com/yotam-yakov/financer#readme"
 }
