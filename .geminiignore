@@ -1,0 +1,25 @@
+# Exclude deep dependency chains and locks
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+.venv/
+env/
+
+# Exclude build and distribution output folders
+dist/
+build/
+out/
+target/
+
+# Exclude large cache systems
+.git/
+.idea/
+.vscode/
+.next/
+.cache/
+__pycache__/
+
+# Exclude local runtime or build logs
+*.log
+.env*
