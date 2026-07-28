@@ -1,0 +1,9 @@
+{
+  "hosting": {
+    "site": "financer-project",
+    "source": "."
+  },
+  "functions": {
+    "source": "functions"
+  }
+}

@@ -5,8 +5,9 @@ const eslintConfig = defineConfig([
   ...nextVitals,
   // Override default ignores of eslint-config-next.
   globalIgnores([
-    // Default ignores of eslint-config-next:
+    // Default ignores of eslint-config-next.
     ".next/**",
+    ".firebase/**",
     "out/**",
     "build/**",
     "next-env.d.ts",
